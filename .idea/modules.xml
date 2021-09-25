@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/BallBounceSimulator/BallBounceSimulator.iml" filepath="$PROJECT_DIR$/BallBounceSimulator/BallBounceSimulator.iml" />
+      <module fileurl="file://$PROJECT_DIR$/MatrixMultiplication/MatrixMultiplication.iml" filepath="$PROJECT_DIR$/MatrixMultiplication/MatrixMultiplication.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/TPDC_Labs.iml" filepath="$PROJECT_DIR$/.idea/TPDC_Labs.iml" />
       <module fileurl="file://$PROJECT_DIR$/ThreadSynchronization/ThreadSynchronization.iml" filepath="$PROJECT_DIR$/ThreadSynchronization/ThreadSynchronization.iml" />
     </modules>
