@@ -1,5 +1,6 @@
 import Common.DoubleSquareMatrix;
 import Common.IMatrixMultiplier;
+import Fox.FoxMultiplier;
 import Serial.SerialMultiplier;
 import Striped.StripedMultiplier;
 
@@ -17,12 +18,18 @@ public class MatrixMultiplication {
         System.out.println();
 
         IMatrixMultiplier stripedMultiplier = new StripedMultiplier(availableProcessors);
+        IMatrixMultiplier foxMultiplier = new FoxMultiplier(availableProcessors);
         IMatrixMultiplier serialMultiplier = new SerialMultiplier();
 
         var currTime = System.nanoTime();
         var result = stripedMultiplier.multiplyDouble(firstMatrix, secondMatrix);
         currTime = System.nanoTime() - currTime;
         System.out.printf("Time elapsed for SA: %d ms\n", currTime / 1_000_000);
+
+        currTime = System.nanoTime();
+        result = foxMultiplier.multiplyDouble(firstMatrix, secondMatrix);
+        currTime = System.nanoTime() - currTime;
+        System.out.printf("Time elapsed for FA: %d ms\n", currTime / 1_000_000);
 
         currTime = System.nanoTime();
         result = serialMultiplier.multiplyDouble(firstMatrix, secondMatrix);
