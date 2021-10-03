@@ -9,6 +9,8 @@ public class SerialMultiplier implements IMatrixMultiplier {
         if (firstMatrix.size != secondMatrix.size)
             throw new IllegalArgumentException("Matrices must be same size");
 
+        secondMatrix.transpose();
+
         DoubleSquareMatrix resultMatrix = new DoubleSquareMatrix(firstMatrix.size);
         for (int row = 0; row < firstMatrix.size; row++) {
             for (int col = 0; col < secondMatrix.size; col++) {
@@ -16,13 +18,14 @@ public class SerialMultiplier implements IMatrixMultiplier {
                 resultMatrix.setValue(row, col, value);
             }
         }
+        secondMatrix.transpose();
         return resultMatrix;
     }
 
     private static double computeDoubleMatrixCell(DoubleSquareMatrix firstMatrix, DoubleSquareMatrix secondMatrix, int row, int col){
         double cell = 0;
         for (int i = 0; i < secondMatrix.size; i++) {
-            cell += firstMatrix.getValue(row, i) * secondMatrix.getValue(i, col);
+            cell += firstMatrix.getValue(row, i) * secondMatrix.getValue(col, i);
         }
         return cell;
     }
@@ -31,6 +34,7 @@ public class SerialMultiplier implements IMatrixMultiplier {
         if (firstMatrix.size != secondMatrix.size)
             throw new IllegalArgumentException("Matrices must be same size");
 
+        secondMatrix.transpose();
         IntegerSquareMatrix resultMatrix = new IntegerSquareMatrix(firstMatrix.size);
         for (int row = 0; row < firstMatrix.size; row++) {
             for (int col = 0; col < secondMatrix.size; col++) {
@@ -38,13 +42,14 @@ public class SerialMultiplier implements IMatrixMultiplier {
                 resultMatrix.setValue(row, col, value);
             }
         }
+        secondMatrix.transpose();
         return resultMatrix;
     }
 
     private static int computeIntegerMatrixCell(IntegerSquareMatrix firstMatrix, IntegerSquareMatrix secondMatrix, int row, int col){
         int cell = 0;
         for (int i = 0; i < secondMatrix.size; i++) {
-            cell += firstMatrix.getValue(row, i) * secondMatrix.getValue(i, col);
+            cell += firstMatrix.getValue(row, i) * secondMatrix.getValue(col, i);
         }
         return cell;
     }

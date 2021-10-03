@@ -4,13 +4,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
-public class StripedCallable implements Callable<Map<String, Number>> {
+public class StripedCallableInteger implements Callable<Map<String, Number>> {
     private final int rowIndex;
     private final int columnIndex;
-    private final double[] row;
-    private final double[] column;
+    private final int[] row;
+    private final int[] column;
 
-    public StripedCallable(double[] row, int rowIndex, double[] column, int columnIndex) {
+    public StripedCallableInteger(int[] row, int rowIndex, int[] column, int columnIndex) {
         this.row = row;
         this.rowIndex = rowIndex;
         this.column = column;
@@ -20,7 +20,7 @@ public class StripedCallable implements Callable<Map<String, Number>> {
     @Override
     public Map<String, Number> call() {
         Map<String, Number> result = new HashMap<>();
-        double value = 0;
+        int value = 0;
         for (int i = 0; i < row.length; i++) {
             value += row[i] * column[i];
         }

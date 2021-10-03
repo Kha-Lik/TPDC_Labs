@@ -20,7 +20,7 @@ public class DoubleSquareMatrix {
         return _matrix[row][col];
     }
 
-    public void fillWithRandomNumber(){
+    public void fillWithRandomNumbers(){
         Random rng = new Random();
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {

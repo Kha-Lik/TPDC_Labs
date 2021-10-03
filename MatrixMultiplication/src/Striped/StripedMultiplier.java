@@ -19,7 +19,47 @@ public class StripedMultiplier implements IMatrixMultiplier {
 
     @Override
     public IntegerSquareMatrix multiplyInteger(IntegerSquareMatrix firstMatrix, IntegerSquareMatrix secondMatrix) {
-        return null;
+        if (firstMatrix.size != secondMatrix.size)
+            throw new IllegalArgumentException("Matrices must be same size");
+
+        IntegerSquareMatrix resultMatrix = new IntegerSquareMatrix(firstMatrix.size);
+
+        resultMatrix = privateMultiplyInteger(firstMatrix, secondMatrix, resultMatrix);
+
+        return resultMatrix;
+    }
+
+    private IntegerSquareMatrix privateMultiplyInteger(IntegerSquareMatrix firstMatrix, IntegerSquareMatrix secondMatrix, IntegerSquareMatrix resultMatrix) {
+        secondMatrix.transpose();
+
+        ExecutorService executor = Executors.newFixedThreadPool(this._nThread);
+
+        List<Future<Map<String, Number>>> list = new ArrayList<>();
+
+        for (int j = 0; j < secondMatrix.size; j++) {
+            for (int i = 0; i < firstMatrix.size; i++) {
+                Callable<Map<String, Number>> worker =
+                        new StripedCallableInteger(firstMatrix.getRow(i), i, secondMatrix.getRow(j), j);
+                Future<Map<String, Number>> submit = executor.submit(worker);
+                list.add(submit);
+            }
+        }
+
+        for (Future<Map<String, Number>> mapFuture : list) {
+            try {
+                Map<String, Number> res = mapFuture.get();
+                var row = (int) res.get("rowIndex");
+                var col = (int) res.get("columnIndex");
+                var value = (int) res.get("value");
+                resultMatrix.setValue(row, col, value);
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+        }
+
+        executor.shutdown();
+        secondMatrix.transpose();
+        return resultMatrix;
     }
 
     @Override
@@ -44,7 +84,7 @@ public class StripedMultiplier implements IMatrixMultiplier {
         for (int j = 0; j < secondMatrix.size; j++) {
             for (int i = 0; i < firstMatrix.size; i++) {
                 Callable<Map<String, Number>> worker =
-                        new StripedCallable(firstMatrix.getRow(i), i, secondMatrix.getRow(j), j);
+                        new StripedCallableDouble(firstMatrix.getRow(i), i, secondMatrix.getRow(j), j);
                 Future<Map<String, Number>> submit = executor.submit(worker);
                 list.add(submit);
             }
@@ -63,9 +103,7 @@ public class StripedMultiplier implements IMatrixMultiplier {
         }
 
         executor.shutdown();
-
         secondMatrix.transpose();
-
         return resultMatrix;
     }
 }

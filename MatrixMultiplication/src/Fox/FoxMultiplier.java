@@ -19,7 +19,71 @@ public class FoxMultiplier implements IMatrixMultiplier {
 
     @Override
     public IntegerSquareMatrix multiplyInteger(IntegerSquareMatrix firstMatrix, IntegerSquareMatrix secondMatrix) {
-        return null;
+        if (firstMatrix.size != secondMatrix.size)
+            throw new IllegalArgumentException("Matrices must be same size");
+
+        IntegerSquareMatrix resultMatrix = new IntegerSquareMatrix(firstMatrix.size);
+        _threadNumber = Math.min(_threadNumber, firstMatrix.size);
+        _threadNumber = findNearestDivider(_threadNumber, firstMatrix.size);
+        int step = firstMatrix.size / _threadNumber;
+        ExecutorService exec = Executors.newFixedThreadPool(_threadNumber);
+        ArrayList<Future> threads = new ArrayList<>();
+
+        int[][] matrixOfSizesI = new int[_threadNumber][_threadNumber];
+        int[][] matrixOfSizesJ = new int[_threadNumber][_threadNumber];
+
+        int stepI = 0;
+        for (int i = 0; i < _threadNumber; i++) {
+            int stepJ = 0;
+            for (int j = 0; j < _threadNumber; j++) {
+                matrixOfSizesI[i][j] = stepI;
+                matrixOfSizesJ[i][j] = stepJ;
+                stepJ += step;
+            }
+            stepI += step;
+        }
+
+        for (int l = 0; l < _threadNumber; l++) {
+            for (int i = 0; i < _threadNumber; i++) {
+                for (int j = 0; j < _threadNumber; j++) {
+                    int stepI0 = matrixOfSizesI[i][j];
+                    int stepJ0 = matrixOfSizesJ[i][j];
+
+                    int stepI1 = matrixOfSizesI[i][(i + l) % _threadNumber];
+                    int stepJ1 = matrixOfSizesJ[i][(i + l) % _threadNumber];
+
+                    int stepI2 = matrixOfSizesI[(i + l) % _threadNumber][j];
+                    int stepJ2 = matrixOfSizesJ[(i + l) % _threadNumber][j];
+
+                    FoxThreadInteger t = new FoxThreadInteger(
+                            copyIntBlock(firstMatrix, stepI1, stepJ1, step),
+                            copyIntBlock(secondMatrix, stepI2, stepJ2, step),
+                            resultMatrix,
+                            stepI0,
+                            stepJ0);
+                    threads.add(exec.submit(t));
+                }
+            }
+        }
+
+        for (Future mapFuture : threads) {
+            try {
+                mapFuture.get();
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+        }
+
+        exec.shutdown();
+        return resultMatrix;
+    }
+
+    private IntegerSquareMatrix copyIntBlock(IntegerSquareMatrix matrix, int i, int j, int size) {
+        IntegerSquareMatrix block = new IntegerSquareMatrix(size);
+        for (int k = 0; k < size; k++) {
+            System.arraycopy(matrix.getRow(k + i), j, block.getRow(k), 0, size);
+        }
+        return block;
     }
 
     @Override
@@ -28,11 +92,9 @@ public class FoxMultiplier implements IMatrixMultiplier {
             throw new IllegalArgumentException("Matrices must be same size");
 
         DoubleSquareMatrix resultMatrix = new DoubleSquareMatrix(firstMatrix.size);
-
         _threadNumber = Math.min(_threadNumber, firstMatrix.size);
         _threadNumber = findNearestDivider(_threadNumber, firstMatrix.size);
         int step = firstMatrix.size / _threadNumber;
-
         ExecutorService exec = Executors.newFixedThreadPool(_threadNumber);
         ArrayList<Future> threads = new ArrayList<>();
 
@@ -82,7 +144,6 @@ public class FoxMultiplier implements IMatrixMultiplier {
         }
 
         exec.shutdown();
-
         return resultMatrix;
     }
 

@@ -25,7 +25,7 @@ public class IntegerSquareMatrix {
         Random rng = new Random();
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-                _matrix[i][j] = rng.nextInt();
+                _matrix[i][j] = rng.nextInt(1000);
             }
         }
     }
@@ -51,7 +51,7 @@ public class IntegerSquareMatrix {
     public void print(){
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-                System.out.printf("%d", _matrix[i][j]);
+                System.out.printf("%d\t", _matrix[i][j]);
             }
             System.out.println();
         }
