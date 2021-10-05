@@ -10,8 +10,8 @@ import java.util.Arrays;
 public class MatrixMultiplication {
 
     public static void main(String[] args) {
-        runCommonTest(false, 1000);
-        //runOverallBenchmark();
+        //runCommonTest(false, 1000);
+        runOverallBenchmark();
     }
 
     private static void runCommonTest(boolean printMatrices, int size){
@@ -19,7 +19,7 @@ public class MatrixMultiplication {
         System.out.printf("Available processors: %d", availableProcessors);
         System.out.println();
 
-        System.out.printf("Matrix size: %d", size);
+        System.out.printf("Matrix size: %d\n", size);
 
         DoubleSquareMatrix firstMatrix = new DoubleSquareMatrix(size);
         DoubleSquareMatrix secondMatrix = new DoubleSquareMatrix(size);
@@ -89,20 +89,20 @@ public class MatrixMultiplication {
         var threadNums = new int[]{2, 4, 8};
         System.out.println("Size\t\t\tSerial time\t\t\tSA 2 threads\t\tFA 2 threads\t\tSA 4 threads\t\tFA 4 threads\t\tSA 8 threads\t\tFA 8 threads");
         for (var size: sizes){
-            System.out.printf("%d\t\t\t\t", size);
+            System.out.printf("%04d\t\t\t", size);
 
             var firstMatrix = new DoubleSquareMatrix(size);
             var secondMatrix = new DoubleSquareMatrix(size);
             var serialMultiplier = new SerialMultiplier();
 
-            System.out.printf("%d ms\t\t\t\t", getAverageTime(serialMultiplier, firstMatrix, secondMatrix));
+            System.out.printf("%06d ms\t\t\t", getAverageTime(serialMultiplier, firstMatrix, secondMatrix));
 
             for (var nThread: threadNums){
                 var stripedMultiplier = new StripedMultiplier(nThread);
                 var foxMultiplier = new FoxMultiplier(nThread);
 
-                System.out.printf("%d ms\t\t\t\t", getAverageTime(stripedMultiplier, firstMatrix, secondMatrix));
-                System.out.printf("%d ms\t\t\t\t", getAverageTime(foxMultiplier, firstMatrix, secondMatrix));
+                System.out.printf("%06d ms\t\t\t", getAverageTime(stripedMultiplier, firstMatrix, secondMatrix));
+                System.out.printf("%06d ms\t\t\t", getAverageTime(foxMultiplier, firstMatrix, secondMatrix));
             }
             System.out.println();
         }
