@@ -26,10 +26,3 @@ public class Producer<T> implements Runnable {
     drop.put(stopMessage);
   }
 }
-
-/*
-MESSAGE RECEIVED: Mares eat oats
-MESSAGE RECEIVED: Does eat oats
-MESSAGE RECEIVED: Little lambs eat ivy
-MESSAGE RECEIVED: A kid will eat ivy too
- */

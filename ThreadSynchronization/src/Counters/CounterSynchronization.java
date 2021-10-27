@@ -41,6 +41,6 @@ public class CounterSynchronization {
     counter.print();
     counterLock.print();
     counterSyncBlock.print();
-    counterSyncBlock.print();
+    counterSynchronizedMethod.print();
   }
 }

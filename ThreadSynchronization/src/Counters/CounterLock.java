@@ -1,19 +1,22 @@
 package Counters;
 
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 public class CounterLock implements ICounter {
-  private final Object lock = new Object();
+  private final Lock lock = new ReentrantLock();
   private int _counter;
 
   public void increment() {
-    synchronized (lock) {
+    lock.lock();
       ++_counter;
-    }
+    lock.unlock();
   }
 
   public void decrement() {
-    synchronized (lock) {
+    lock.lock();
       --_counter;
-    }
+    lock.unlock();
   }
 
   public void print() {
