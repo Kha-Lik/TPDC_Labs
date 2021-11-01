@@ -4,7 +4,7 @@ import java.sql.Array;
 
 public class ProducerConsumer {
   public static void main(String[] args) {
-    Number[] importantInfo = new Number[10];
+    Number[] importantInfo = new Number[1000];
     for (int i = 0; i < importantInfo.length; i++) importantInfo[i] = i + 1;
 
     Drop<Number> drop = new Drop<Number>();

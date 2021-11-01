@@ -10,8 +10,10 @@ import java.util.Arrays;
 public class MatrixMultiplication {
 
     public static void main(String[] args) {
-        //runCommonTest(false, 1000);
-        runOverallBenchmark();
+        runCommonTest(false, 2000);
+        runCommonTest(false, 2000);
+        runCommonTest(false, 2000);
+        //runOverallBenchmark();
     }
 
     private static void runCommonTest(boolean printMatrices, int size){
@@ -31,22 +33,22 @@ public class MatrixMultiplication {
         firstIntMatrix.fillWithRandomNumbers();
         secondIntMatrix.fillWithRandomNumbers();
 
-        IMatrixMultiplier stripedMultiplier = new StripedMultiplier(availableProcessors);
+        //IMatrixMultiplier stripedMultiplier = new StripedMultiplier(availableProcessors);
         IMatrixMultiplier foxMultiplier = new FoxMultiplier(availableProcessors);
-        IMatrixMultiplier serialMultiplier = new SerialMultiplier();
+        //IMatrixMultiplier serialMultiplier = new SerialMultiplier();
 
         var currTime = System.nanoTime();
-        var resultDouble = serialMultiplier.multiplyDouble(firstMatrix, secondMatrix);
+        /*var resultDouble = serialMultiplier.multiplyDouble(firstMatrix, secondMatrix);
         currTime = System.nanoTime() - currTime;
         System.out.printf("Time elapsed for serial: %d ms\n", currTime / 1_000_000);
 
         currTime = System.nanoTime();
         resultDouble = stripedMultiplier.multiplyDouble(firstMatrix, secondMatrix);
         currTime = System.nanoTime() - currTime;
-        System.out.printf("Time elapsed for SA: %d ms\n", currTime / 1_000_000);
+        System.out.printf("Time elapsed for SA: %d ms\n", currTime / 1_000_000);*/
 
         currTime = System.nanoTime();
-        resultDouble = foxMultiplier.multiplyDouble(firstMatrix, secondMatrix);
+        var resultDouble = foxMultiplier.multiplyDouble(firstMatrix, secondMatrix);
         currTime = System.nanoTime() - currTime;
         System.out.printf("Time elapsed for FA: %d ms\n", currTime / 1_000_000);
 
@@ -59,7 +61,7 @@ public class MatrixMultiplication {
             resultDouble.print();
         }
 
-        currTime = System.nanoTime();
+        /*currTime = System.nanoTime();
         var resultInt = serialMultiplier.multiplyInteger(firstIntMatrix, secondIntMatrix);
         currTime = System.nanoTime() - currTime;
         System.out.printf("Time elapsed for serial (int): %d ms\n", currTime / 1_000_000);
@@ -81,7 +83,7 @@ public class MatrixMultiplication {
             secondIntMatrix.print();
             System.out.println("\nResult int matrix:");
             resultInt.print();
-        }
+        }*/
     }
 
     private static void runOverallBenchmark(){
