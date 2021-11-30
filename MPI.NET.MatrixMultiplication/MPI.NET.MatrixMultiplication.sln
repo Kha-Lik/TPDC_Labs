@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "MPI.NET.MatrixMultiplication.PointToPoint", "MPI.NET.MatrixMultiplication.PointToPoint\MPI.NET.MatrixMultiplication.PointToPoint.fsproj", "{4353CC09-54C2-4289-AF24-05705878A958}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MPI.NET.MatrixMultiplication.Common", "MPI.NET.MatrixMultiplication.Common\MPI.NET.MatrixMultiplication.Common.csproj", "{8BC0CB10-0F44-4B9E-96A1-907E34590AE9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{4353CC09-54C2-4289-AF24-05705878A958}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4353CC09-54C2-4289-AF24-05705878A958}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4353CC09-54C2-4289-AF24-05705878A958}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8BC0CB10-0F44-4B9E-96A1-907E34590AE9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8BC0CB10-0F44-4B9E-96A1-907E34590AE9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8BC0CB10-0F44-4B9E-96A1-907E34590AE9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8BC0CB10-0F44-4B9E-96A1-907E34590AE9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

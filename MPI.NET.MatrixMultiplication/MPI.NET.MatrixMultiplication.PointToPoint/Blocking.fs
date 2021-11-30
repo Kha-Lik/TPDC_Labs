@@ -3,6 +3,7 @@ module Blocking
 
 open MPI
 open System
+open MPI.NET.MatrixMultiplication.Common
 
 let startBlocking (env: MPI.Environment, world: Intracommunicator, matrixARows, matrixACols, matrixBCols, printResult) =
     if world.Rank = 0 then
@@ -20,22 +21,19 @@ let startBlocking (env: MPI.Environment, world: Intracommunicator, matrixARows, 
             let mutable matrixC = Array.init matrixARows (fun _ -> Array.init matrixBCols (fun _ -> 0.0))
             let mutable offset = 0
 
-            let stopwatch = System.Diagnostics.Stopwatch.StartNew();
+            let stopwatch = Diagnostics.Stopwatch.StartNew();
             
             for dest in 1..numWorkers do
                 let rows = if (dest <= extraRows) then averageRows + 1 else averageRows
-                let matrixToSend = Array.sub matrixA offset rows
-                world.Send<int>(offset, dest, 0)
-                world.Send<float[][]>(matrixToSend, dest, 0)
-                world.Send<float[][]>(matrixB, dest, 0)
+                let matrixToSend = Array.sub matrixA offset rows 
+                let sendModel = MatrixSendModel(offset, matrixToSend, matrixB)
+                world.Send(sendModel, dest, 0)
                 offset <- offset + rows
 
             for source in 1..numWorkers do
-                offset <- world.Receive<int>(source, 0)
-                let receivedMatrix = world.Receive<float[][]>(source, 0)
-                for i in 0..receivedMatrix.Length-1 do
-                    for j in 0..matrixBCols-1 do
-                        matrixC[i+offset][j] <- receivedMatrix[i][j]
+                let resultModel = world.Receive<MultiplyResultModel>(source, 0)
+                for i in 0..resultModel.Result.Length-1 do
+                        matrixC[i+resultModel.Offset] <- resultModel.Result[i]
             
             stopwatch.Stop()
 
@@ -53,17 +51,18 @@ let startBlocking (env: MPI.Environment, world: Intracommunicator, matrixARows, 
             0
 
     else
-        let offset = world.Receive<int>(0, 0)
-        let receivedMatrix = world.Receive<float[][]>(0, 0)
-        let matrixB = world.Receive<float[][]>(0, 0)
-        let mutable matrixToSend = Array.init receivedMatrix.Length (fun _ -> Array.init matrixBCols (fun _ -> 0.0))
+        try
+            let sendModel = world.Receive<MatrixSendModel>(0, 0)
+            let mutable matrixToSend = Array.init sendModel.FirstMatrixRows.Length (fun _ -> Array.init matrixBCols (fun _ -> 0.0))
 
-        for k in 0..matrixBCols-1 do
-            for i in 0..receivedMatrix.Length-1 do
-                for j in 0..matrixACols-1 do
-                    matrixToSend[i][k] <- matrixToSend[i][k] + receivedMatrix[i][j] * matrixB[j][k]
-        
-        world.Send<int>(offset, 0, 0)
-        world.Send<float[][]>(matrixToSend, 0, 0)
+            for k in 0..matrixBCols-1 do
+                for i in 0..sendModel.FirstMatrixRows.Length-1 do
+                    for j in 0..matrixACols-1 do
+                        matrixToSend[i][k] <- matrixToSend[i][k] + sendModel.FirstMatrixRows[i][j] * sendModel.SecondMatrix[j][k]
+
+            let resultModel = MultiplyResultModel(sendModel.Offset, matrixToSend)
+            world.Send(resultModel, 0, 0)
+        with
+            | :? (Exception) as ex ->printfn "%s" ex.Message 
         0
     |> ignore

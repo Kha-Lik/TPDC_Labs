@@ -20,11 +20,14 @@ let main args =
         matrixBCols <- int args[2+argsOffset]
     let env = new Environment(ref args)
     let world = Communicator.world
-
-    if isBlocking then
-        startBlocking (env, world, matrixARows, matrixACols, matrixBCols, printResult)
+    
+    if world.Size < 2 then
+        printfn "You need to run this program on more than one processor"
     else
-        startNonBlocking (env, world, matrixARows, matrixACols, matrixBCols, printResult)
+        if isBlocking then
+            startBlocking (env, world, matrixARows, matrixACols, matrixBCols, printResult)
+        else
+            startNonBlocking (env, world, matrixARows, matrixACols, matrixBCols, printResult)
 
     env.Dispose()
     0
