@@ -10,7 +10,6 @@ let startNonBlocking (env: MPI.Environment, world: Intracommunicator, matrixARow
     if world.Rank = 0 then
         if world.Size < 2 then
             printfn "You need to run this program on more than one processor"
-            0
         else
             let rnd = Random()
             let numWorkers = world.Size - 1
@@ -47,7 +46,7 @@ let startNonBlocking (env: MPI.Environment, world: Intracommunicator, matrixARow
             
             stopwatch.Stop()
 
-            printfn "Time elapsed to multiply matrices A(%dx%d) and B(%dx%d) with %d workers: %dms" matrixARows matrixACols matrixACols matrixBCols numWorkers stopwatch.ElapsedMilliseconds
+            printfn $"Time elapsed to multiply matrices A(%d{matrixARows}x%d{matrixACols}) and B(%d{matrixACols}x%d{matrixBCols}) with %d{numWorkers} workers: %d{stopwatch.ElapsedMilliseconds}ms"
             
             if printResult then
                 printf "****\n"
@@ -55,10 +54,9 @@ let startNonBlocking (env: MPI.Environment, world: Intracommunicator, matrixARow
                 for i in 0..matrixARows-1 do
                     printf "\n"
                     for j in 0..matrixBCols-1 do
-                        printf "%6.2f" matrixC[i].[j]
+                        printf $"%6.2f{matrixC[i].[j]}"
                 printf "\n********\n"
-                printf "Done.\n"
-            0
+                printf "Done.\n"           
 
     else
         try
@@ -73,6 +71,5 @@ let startNonBlocking (env: MPI.Environment, world: Intracommunicator, matrixARow
             let resultModel = MultiplyResultModel(sendModel.Offset, matrixToSend)
             world.ImmediateSend(resultModel, 0, 1) |> ignore
         with
-            | :? (Exception) as ex ->printfn "%s" ex.Message 
-        0
+            | :? (Exception) as ex ->printfn $"%s{ex.Message}" 
     |> ignore

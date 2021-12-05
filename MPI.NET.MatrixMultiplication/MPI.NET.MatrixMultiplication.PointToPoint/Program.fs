@@ -1,6 +1,5 @@
 #light
 
-open System
 open MPI
 open Blocking
 open NonBlocking
@@ -11,8 +10,8 @@ let mutable matrixBCols = 400
 
 [<EntryPoint>]
 let main args =
-    let printResult = if args.Length > 0 && args[0] = "-p" || args[0] = "-pb" then true else false
-    let isBlocking = if args.Length > 0 && args[0] = "-b" || args[0] = "-pb" then true else false
+    let printResult = args.Length > 0 && args[0] = "-p" || args[0] = "-pb"
+    let isBlocking = args.Length > 0 && args[0] = "-b" || args[0] = "-pb"
     let argsOffset = if printResult || isBlocking then 1 else 0
     if args.Length > 1 then
         matrixARows <- int args[0+argsOffset]

@@ -37,7 +37,7 @@ let startBlocking (env: MPI.Environment, world: Intracommunicator, matrixARows, 
             
             stopwatch.Stop()
 
-            printfn "Time elapsed to multiply matrices A(%dx%d) and B(%dx%d) with %d workers: %dms" matrixARows matrixACols matrixACols matrixBCols numWorkers stopwatch.ElapsedMilliseconds
+            printfn $"Time elapsed to multiply matrices A(%d{matrixARows}x%d{matrixACols}) and B(%d{matrixACols}x%d{matrixBCols}) with %d{numWorkers} workers: %d{stopwatch.ElapsedMilliseconds}ms"
             
             if printResult then
                 printf "****\n"
@@ -45,7 +45,7 @@ let startBlocking (env: MPI.Environment, world: Intracommunicator, matrixARows, 
                 for i in 0..matrixARows-1 do
                     printf "\n"
                     for j in 0..matrixBCols-1 do
-                        printf "%6.2f" matrixC[i].[j]
+                        printf $"%6.2f{matrixC[i].[j]}"
                 printf "\n********\n"
                 printf "Done.\n"
             0
@@ -63,6 +63,6 @@ let startBlocking (env: MPI.Environment, world: Intracommunicator, matrixARows, 
             let resultModel = MultiplyResultModel(sendModel.Offset, matrixToSend)
             world.Send(resultModel, 0, 0)
         with
-            | :? (Exception) as ex ->printfn "%s" ex.Message 
+            | :? (Exception) as ex ->printfn $"%s{ex.Message}" 
         0
     |> ignore
